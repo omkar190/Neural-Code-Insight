@@ -1,0 +1,18 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
+# AWS Configuration
+aws:
+  s3:
+    bucket-name: neural-code-analysis-repos
+
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+    software.amazon.awssdk.s3: DEBUG

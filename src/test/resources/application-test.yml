@@ -1,0 +1,14 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password:
+
+aws:
+  s3:
+    bucket-name: test-bucket
+
+logging:
+  level:
+    com.neuralcode.insight: DEBUG
+    root: WARN
