@@ -9,7 +9,7 @@ A reactive Spring Boot application that analyzes Java code repositories with int
 - **AWS S3 Storage**: Secure cloud storage with proper region handling and multipart uploads
 - **Robust Error Handling**: Comprehensive exception management with meaningful error responses
 - **Input Validation**: Strong request validation with custom exception handling
-- **Database Integration**: R2DBC with H2 for reactive database operations
+- **Database Integration**: R2DBC with H2 (PostgreSQL in future) for reactive database operations
 
 ## 🛠️ Tech Stack
 
