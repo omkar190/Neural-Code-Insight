@@ -31,9 +31,10 @@ public class AnalysisService {
                     saved.markNotNew();
 
                     return repositoryService.cloneAndStoreRepository(
-                                    repositoryUrl, branchName, analysisId)  // Pass analysis ID for S3 folder
+                                    repositoryUrl, branchName, analysisId)
                             .flatMap(location -> {
                                 saved.setStatus("STORED_IN_LOCAL");
+                                saved.setStorageLocation(location);
                                 return analysisRepository.save(saved);
                             })
                             .onErrorResume(error -> {

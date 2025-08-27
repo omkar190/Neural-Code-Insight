@@ -17,14 +17,25 @@ public class CodeAnalysis implements Persistable<String> {
 
     @Id
     private String id;
+
+    @Column("repository_url")
     private String repositoryUrl;
+
+    @Column("branch_name ")
     private String branchName;
     private String status;
+
+    @Column("start_time")
     private LocalDateTime startTime;
+
+    @Column("end_time")
     private LocalDateTime endTime;
 
     @Column("error_message")
     private String errorMessage;
+
+    @Column("storage_location")
+    private String storageLocation;
 
     @Transient
     @Setter(AccessLevel.NONE)

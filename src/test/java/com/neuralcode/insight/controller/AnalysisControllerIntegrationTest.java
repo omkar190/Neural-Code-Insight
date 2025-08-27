@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
@@ -17,11 +18,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+@ActiveProfiles("test")
 @SpringBootTest(
         classes = NeuralCodeInsightApplication.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "AWS_DEFAULT_REGION=eu-north-1"
+                "AWS_DEFAULT_REGION=eu-north-1",
+                "AWS_S3_BUCKET_NAME=test_bucket"
         }
 )
 class AnalysisControllerIntegrationTest {
@@ -56,7 +59,7 @@ class AnalysisControllerIntegrationTest {
                 .expectBody(AnalysisResponse.class)
                 .value(response -> {
                     assertThat(response.getAnalysisId()).isNotEmpty();
-                    assertThat(response.getStatus()).isEqualTo("STORED_IN_S3");
+                    assertThat(response.getStatus()).isEqualTo("STORED_IN_LOCAL");
                     assertThat(response.getRepositoryUrl()).isEqualTo(request.repositoryUrl());
                 });
     }

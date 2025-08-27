@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 @Service
 public class S3StorageService {
 
-    @Value("${aws.s3.bucket-name}")
+    @Value("${AWS_S3_BUCKET_NAME}")
     private String bucketName;
 
     @Value("${AWS_DEFAULT_REGION}")

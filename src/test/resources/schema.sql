@@ -7,5 +7,6 @@ CREATE TABLE code_analysis(
     status VARCHAR(50) NOT NULL,
     start_time TIMESTAMP,
     end_time TIMESTAMP,
-    error_message VARCHAR(255)
+    error_message VARCHAR(255),
+    storage_location VARCHAR(255)
 );

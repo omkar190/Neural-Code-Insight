@@ -1,18 +1,24 @@
 spring:
   r2dbc:
-    url: r2dbc:h2:mem:///testdb
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    pool:
+      initial-size: 10
+      max-size: 20
+      max-idle-time: 30m
+      validation-query: SELECT 1
 
-# AWS Configuration
 aws:
+  region: ${AWS_DEFAULT_REGION}
   s3:
-    bucket-name: neural-code-analysis-repos
+    bucket-name: ${AWS_S3_BUCKET_NAME}
+  access-key-id: ${AWS_ACCESS_KEY_ID}
+  secret-access-key: ${AWS_SECRET_ACCESS_KEY}
 
 logging:
   level:
     org.springframework.r2dbc: DEBUG
     software.amazon.awssdk.s3: DEBUG
+    org.springframework: WARN
+    root: INFO

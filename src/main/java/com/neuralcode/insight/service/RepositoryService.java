@@ -23,8 +23,6 @@ import java.util.concurrent.TimeoutException;
 @Slf4j
 public class RepositoryService {
 
-    private final S3StorageService s3StorageService;
-
     public Mono<String> cloneAndStoreRepository(String repositoryUrl, String branchName, String analysisId) {
         return validateRepositoryUrl(repositoryUrl)
                 .then(performCloneAndStore(repositoryUrl, branchName, analysisId))
@@ -69,7 +67,7 @@ public class RepositoryService {
                                 .call();
 
                         log.info("Successfully cloned repository to: {}", tempDir);
-                        return "Cloned Successfully!";
+                        return tempDir.toString();
 
                     } catch (GitAPIException e) {
                         log.error("Git clone failed for repository: {}", repositoryUrl, e);

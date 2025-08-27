@@ -9,12 +9,12 @@ A reactive Spring Boot application that analyzes Java code repositories with int
 - **AWS S3 Storage**: Secure cloud storage with proper region handling and multipart uploads
 - **Robust Error Handling**: Comprehensive exception management with meaningful error responses
 - **Input Validation**: Strong request validation with custom exception handling
-- **Database Integration**: R2DBC with H2 (PostgreSQL in future) for reactive database operations
+- **Database Integration**: R2DBC with PostgreSQL for reactive database operations
 
 ## 🛠️ Tech Stack
 
 - **Backend**: Java 17, Spring Boot 3.x, Spring WebFlux
-- **Database**: R2DBC with H2 Database (PostgreSQL in future)
+- **Database**: R2DBC with PostgreSQL
 - **Cloud**: AWS S3 SDK with CRT support
 - **Version Control**: JGit for Git operations
 - **Build Tool**: Maven
