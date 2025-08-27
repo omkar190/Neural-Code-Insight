@@ -4,12 +4,14 @@ import com.neuralcode.insight.exception.InvalidRepositoryUrlException;
 import com.neuralcode.insight.exception.RepositoryCloneException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -67,7 +69,7 @@ public class RepositoryService {
                                 .call();
 
                         log.info("Successfully cloned repository to: {}", tempDir);
-                        return new String[]{tempDir.toString(), directoryName};
+                        return "Cloned Successfully!";
 
                     } catch (GitAPIException e) {
                         log.error("Git clone failed for repository: {}", repositoryUrl, e);
@@ -84,21 +86,22 @@ public class RepositoryService {
                         }
                     }
                 })
-                .subscribeOn(Schedulers.boundedElastic())
-                .flatMap(pathAndName -> {
-                    String localPath = pathAndName[0];
-                    String directoryName = pathAndName[1];
-
-                    return s3StorageService.uploadRepository(localPath, directoryName)
-                            .flatMap(s3Location ->
-                                    s3StorageService.cleanupLocalDirectory(localPath)
-                                            .onErrorResume(ex -> {
-                                                log.warn("Failed to cleanup local directory: {}", localPath, ex);
-                                                return Mono.empty();
-                                            })
-                                            .thenReturn(s3Location)
-                            );
-                });
+                .subscribeOn(Schedulers.boundedElastic());
+        //         Removing S3 Upload Logic - Since Only Local Copy is needed
+//                .flatMap(pathAndName -> {
+//                    String localPath = pathAndName[0];
+//                    String directoryName = pathAndName[1];
+//
+//                    return s3StorageService.uploadRepository(localPath, directoryName)
+//                            .flatMap(s3Location ->
+//                                    cleanupLocalDirectory(localPath)
+//                                            .onErrorResume(ex -> {
+//                                                log.warn("Failed to clean up local directory: {}", localPath, ex);
+//                                                return Mono.empty();
+//                                            })
+//                                            .thenReturn(s3Location)
+//                            );
+//                });
     }
 
     String extractProjectNameFromUrl(String repositoryUrl) {
@@ -120,5 +123,21 @@ public class RepositoryService {
     String cleanBranchName(String branchName) {
         // Convert branch names like "feature/user-auth" to "feature-user-auth"
         return branchName.replaceAll("[^a-zA-Z0-9\\-_]", "-");
+    }
+
+    public Mono<Void> cleanupLocalDirectory(String localPath) {
+        return Mono.fromRunnable(() -> {
+                    try {
+                        File directory = new File(localPath);
+                        if (directory.exists()) {
+                            FileUtils.deleteDirectory(directory);
+                            log.debug("Directory completely deleted: {}", localPath);
+                        }
+                    } catch (Exception e) {
+                        log.error("Failed to delete directory: {}", e.getMessage());
+                    }
+                })
+                .subscribeOn(Schedulers.boundedElastic())
+                .then();
     }
 }

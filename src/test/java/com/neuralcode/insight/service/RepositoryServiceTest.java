@@ -66,17 +66,17 @@ class RepositoryServiceTest {
                 .expectError(InvalidRepositoryUrlException.class)
                 .verify();
     }
-
-    @Test
-    void shouldHandleS3UploadFailure() {
-        // Given
-        String validUrl = "https://github.com/spring-projects/spring-petclinic";
-        when(s3StorageService.uploadRepository(anyString(), anyString()))
-                .thenReturn(Mono.error(new S3UploadException("/tmp/test", "S3 error", new RuntimeException())));
-
-        // When & Then
-        StepVerifier.create(repositoryService.cloneAndStoreRepository(validUrl, "main", "test-id"))
-                .expectError(S3UploadException.class)
-                .verify();
-    }
+    // Not Needed since we are not doing S3 Upload
+//    @Test
+//    void shouldHandleS3UploadFailure() {
+//        // Given
+//        String validUrl = "https://github.com/spring-projects/spring-petclinic";
+//        when(s3StorageService.uploadRepository(anyString(), anyString()))
+//                .thenReturn(Mono.error(new S3UploadException("/tmp/test", "S3 error", new RuntimeException())));
+//
+//        // When & Then
+//        StepVerifier.create(repositoryService.cloneAndStoreRepository(validUrl, "main", "test-id"))
+//                .expectError(S3UploadException.class)
+//                .verify();
+//    }
 }

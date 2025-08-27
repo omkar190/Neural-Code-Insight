@@ -1,6 +1,6 @@
 package com.neuralcode.insight.service;
 
-import org.apache.commons.io.FileUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -8,7 +8,6 @@ import reactor.core.scheduler.Schedulers;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
-import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
 import software.amazon.awssdk.transfer.s3.model.CompletedDirectoryUpload;
 import software.amazon.awssdk.transfer.s3.model.DirectoryUpload;
@@ -17,11 +16,10 @@ import software.amazon.awssdk.transfer.s3.model.UploadDirectoryRequest;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
+@Slf4j
 @Service
 public class S3StorageService {
 
@@ -84,24 +82,8 @@ public class S3StorageService {
                 })
                 .subscribeOn(Schedulers.boundedElastic())
                 .doOnSuccess(s3Location ->
-                        System.out.println("Repository uploaded to: " + s3Location))
+                        log.debug("Repository uploaded to: {}", s3Location))
                 .doOnError(error ->
-                        System.err.println("Failed to upload to S3: " + error.getMessage()));
-    }
-
-    public Mono<Void> cleanupLocalDirectory(String localPath) {
-        return Mono.fromRunnable(() -> {
-                    try {
-                        File directory = new File(localPath);
-                        if (directory.exists()) {
-                            FileUtils.deleteDirectory(directory);
-                            System.out.println("Directory completely deleted: " + localPath);
-                        }
-                    } catch (Exception e) {
-                        System.err.println("Failed to delete directory: " + e.getMessage());
-                    }
-                })
-                .subscribeOn(Schedulers.boundedElastic())
-                .then();
+                        log.error("Failed to upload to S3: {}", error.getMessage()));
     }
 }
